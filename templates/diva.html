@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tanya Aku 🤖💬</title>
+
+    <link href="/static/css/uikit.min.css" rel="stylesheet">
+    <link href="/static/css/prism-vsc-dark-plus.min.css" rel="stylesheet">
+
+    <!-- Prism.js core library and Python language component -->
+    <script src="static/js/prism.min.js"></script>
+    <script src="static/js/prism-python.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            // Highlight code blocks
+            document.querySelectorAll('pre code').forEach((el) => {
+                hljs.highlightElement(el);
+            });
+
+            // Scroll chat-box to the bottom
+            const chatBox = document.getElementById('chat-box');
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
+        
+        // Function to ensure scroll to bottom when new messages are added
+        function scrollToBottom() {
+            const chatBox = document.getElementById('chat-box');
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // Call scrollToBottom on every new message added
+        document.addEventListener('DOMNodeInserted', function(event) {
+            if (event.target.closest('#chat-box')) {
+                scrollToBottom();
+            }
+        });
+    </script>
+
+    <style>
+        body {
+            background-color: #fdfdfd;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        #chat-container {
+            width: 90%; /* Make the width proportional to the viewport */
+            max-width: 1000px;
+            height: 80vh; /* Make the height proportional to the viewport */
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: none;
+            background: #fdfdfd;
+        }
+
+        #chat-box {
+            height: calc(100% - 70px); /* Adjust based on the height of the chat-form */
+            overflow-y: auto;
+            padding: 10px 5px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .message {
+            padding: 14px 20px;
+            border-radius: 20px;
+            max-width: 70%;
+            margin-bottom: 10px;
+            line-height: 1.5;
+            font-size: 15px;
+        }
+
+        .user-message {
+            background-color: #aad4e7;
+            color: #1d1d1d;
+            align-self: flex-end;
+            border-top-right-radius: 0;
+            text-align: right;
+        }
+
+        .bot-response {
+            background-color: #eef6f7;
+            color: #2e2e2e;
+            align-self: flex-start;
+            border-top-left-radius: 0;
+        }
+
+        .chat-form {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: #ffffff;
+            position: sticky; /* Keep the form at the bottom */
+            bottom: 0;
+            width: 94%;
+            border-top: none; /* Remove the border-top */
+        }
+
+        .chat-form input {
+            border-radius: 25px;
+            padding: 14px;
+            border: none; /* Remove the border */
+            margin-right: 10px;
+            flex: 1;
+            background-color: #fafafa;
+        }
+
+        .chat-form button {
+            border-radius: 25px;
+            padding: 10px 20px;
+            border: none;
+            background-color: #82c4c3;
+            color: #ffffff;
+            font-size: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .chat-form button:hover {
+            background-color: #70aba8;
+        }
+
+        .chat-header {
+            padding: 20px 20px;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .chat-header h3 {
+            font-size: 22px;
+            color: #333;
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .chat-header p {
+            font-size: 15px;
+            color: #888;
+            margin: 0;
+        }
+
+        pre {
+            background-color: #f0f4f5;
+            padding: 12px;
+            border-radius: 10px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            overflow-x: auto;
+        }
+
+        code {
+            display: block;
+        }
+
+        .input-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .input-container .form-control {
+            width: 100%;
+            padding-right: 25px; /* Add padding to prevent text from overlapping with the button */
+            border-radius: 25px;
+            padding: 14px;
+            border: none; /* Remove the border */
+            background-color: #fafafa;
+        }
+
+        .input-container .btn {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            border-radius: 25px;
+            padding: 10px 20px;
+            border: none;
+            background-color: #82c4c3;
+            color: #ffffff;
+            font-size: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .input-container .btn:hover {
+            background-color: #70aba8;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <header class="uk-background-transparent uk-position-top-center">
+        <nav class="uk-navbar-container uk-navbar-transparent">
+            <div uk-navbar>
+                <div class="uk-navbar-center">
+                    <a class="uk-navbar-item uk-logo" href="#">
+                        <h1>Tanya Diva 🤖💬</h1>
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Chat container -->
+    <main>
+        <div id="chat-container">
+            <div id="chat-box">
+                {% for msg in history %}
+                {% if msg['user'] %}
+                <div class="message user-message">
+                    {{ msg['user'] }}
+                </div>
+                {% endif %}
+                {% if msg['bot'] %}
+                <div class="message bot-response">
+                    <strong>🤖 Diva:</strong><br>
+                    {% if '
+python' in msg['bot'] %}
+                        <!-- Display code block -->
+                        <pre><code class="language-python">{{ msg['bot'].strip()|replace('
+python', '')|replace('
+', '')|safe }}</code></pre>
+
+                    {% elif msg['bot'].startswith('
+') %}
+                        <!-- Handle other code blocks -->
+                        <pre><code class="language-markup">{{ msg['bot'].strip()|replace('
+', '')|safe }}</code></pre>
+                        {% else %}
+                        <!-- Replace '**' with <br> for line breaks -->
+                        {% if '**' in msg['bot'] %}
+                            <p>{{ msg['bot']
+                                | replace('**', '<br>')
+                                | safe
+                                }}</p>
+                        {% else %}
+                            <!-- Display plain text content -->
+                            <p>{{ msg['bot'] }}</p>
+                        {% endif %}
+                    {% endif %}
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+            <form action="/chat" method="post" class="chat-form">
+                <div class="input-container">
+                    <input type="text" name="user_input" class="form-control" placeholder="Type your question here..." required>
+                    <button type="submit" class="btn">Send</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script src="static/js/uikit.min.js"></script>
+    <script src="static/js/uikit-icons.min.js"></script>
+</body>
+
+</html>
